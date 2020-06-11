@@ -1,0 +1,1 @@
+docker run --hostname webshop-rabbit --name webshop -p 15672:15672 -p 5672:5672 -e RABBITMQ_DEFAULT_USER="user" -e RABBITMQ_DEFAULT_PASS="P@ssword" -it rabbitmq:3-management

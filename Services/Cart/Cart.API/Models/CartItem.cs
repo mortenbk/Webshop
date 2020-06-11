@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cart.Models
+namespace Cart.API.Models
 {
     public partial class CartItem
     {

@@ -21,6 +21,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.API", "Services\Cat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.API", "Services\Inventory\Inventory.API\Inventory.API.csproj", "{37804D1B-73F3-472A-B406-683E0D7F7476}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{0551E8F9-9557-4B81-8A0F-32D1D6BC46A3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "Common\DataAccess\DataAccess.csproj", "{BC53038D-CE31-4BA5-9C1E-944275189F78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{7C0F17F4-7024-49CC-A456-D3A52FC6A93F}"
+	ProjectSection(SolutionItems) = preProject
+		Start_RabbitMQ.cmd = Start_RabbitMQ.cmd
+		Start_SqlServer.cmd = Start_SqlServer.cmd
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShop.RabbitMQ", "Common\WebShop.RabbitMQ\WebShop.RabbitMQ.csproj", "{0A6F17DD-67FF-4918-A557-51D69AB1FA3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +51,14 @@ Global
 		{37804D1B-73F3-472A-B406-683E0D7F7476}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37804D1B-73F3-472A-B406-683E0D7F7476}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37804D1B-73F3-472A-B406-683E0D7F7476}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC53038D-CE31-4BA5-9C1E-944275189F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC53038D-CE31-4BA5-9C1E-944275189F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC53038D-CE31-4BA5-9C1E-944275189F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC53038D-CE31-4BA5-9C1E-944275189F78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A6F17DD-67FF-4918-A557-51D69AB1FA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A6F17DD-67FF-4918-A557-51D69AB1FA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A6F17DD-67FF-4918-A557-51D69AB1FA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A6F17DD-67FF-4918-A557-51D69AB1FA3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +72,8 @@ Global
 		{446C61BA-3CB3-473B-BFE8-34ACE5E0F82E} = {B59170EB-8013-44E1-ACDE-53F9A1CEB30D}
 		{52D9F459-48D5-4B64-B0E8-01E77D5C24EE} = {4CFB6C94-B52D-4293-9DDC-0EFE7302953D}
 		{37804D1B-73F3-472A-B406-683E0D7F7476} = {15670165-0932-46E2-9731-AE6E1C16735D}
+		{BC53038D-CE31-4BA5-9C1E-944275189F78} = {0551E8F9-9557-4B81-8A0F-32D1D6BC46A3}
+		{0A6F17DD-67FF-4918-A557-51D69AB1FA3C} = {0551E8F9-9557-4B81-8A0F-32D1D6BC46A3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7BECD81D-9BEF-4172-B36A-871ABFF43D64}
