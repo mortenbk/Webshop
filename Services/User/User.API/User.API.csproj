@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200613142719_FurtherChanges.cs" />
+    <Compile Remove="Migrations\20200613142719_FurtherChanges.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
@@ -23,6 +28,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\WebShop.RabbitMQ\WebShop.RabbitMQ.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Requests\" />
   </ItemGroup>
 
 

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Catalog.API.Infrastructure;
 using Catalog.API.Models;
+using WebShop.RabbitMQ;
+using Catalog.API.Events;
 
 namespace Catalog.API.Controllers
 {
@@ -15,10 +17,12 @@ namespace Catalog.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly CatalogContext _context;
+        private readonly IEventBus _eventBus;
 
-        public ProductsController(CatalogContext context)
+        public ProductsController(CatalogContext context, IEventBus eventBus)
         {
             _context = context;
+            _eventBus = eventBus;
         }
 
         // GET: api/Products
@@ -52,12 +56,26 @@ namespace Catalog.API.Controllers
             {
                 return BadRequest();
             }
+            var entityProduct = await _context.Products.AsNoTracking().FirstOrDefaultAsync(prod => prod.Id == product.Id);
 
-            _context.Entry(product).State = EntityState.Modified;
+            var oldPrice = entityProduct.Price;
+            var oldName = entityProduct.Name;
+
+            bool invokeProductPriceChanged = oldPrice != product.Price;
+            bool invokeProductNameChanged = oldName != product.Name;
+
+            entityProduct = product;
+            _context.Products.Update(entityProduct);
 
             try
             {
                 await _context.SaveChangesAsync();
+
+                if (invokeProductPriceChanged)
+                    _eventBus.Publish(new ProductPriceChangedMessageEvent() { ProductId = id, Price = product.Price });
+                if (invokeProductNameChanged)
+                    _eventBus.Publish(new ProductNameChangedMessageEvent() { ProductId = id, ProductName = product.Name });
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -98,6 +116,8 @@ namespace Catalog.API.Controllers
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
+
+            _eventBus.Publish(new ProductRemovedMessageEvent() { ProductId = id });
 
             return product;
         }

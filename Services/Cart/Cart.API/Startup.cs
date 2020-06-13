@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Builder;
 using Autofac.Extensions.DependencyInjection;
+using Cart.API.Events;
+using Cart.API.Events.Handlers;
 using Cart.API.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -113,6 +115,9 @@ namespace Cart.API
                 return new RabbitMQConnectionService(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, "Cart", retryCount: 5);
             });
             services.AddSingleton<ISubscriptionManager, SubscriptionManager>();
+            services.AddTransient<ProductPriceChangedEventHandler>();
+            services.AddTransient<ProductNameChangedEventHandler>();
+            services.AddTransient<ProductRemovedEventHandler>();
 
             return services;
         }
@@ -146,6 +151,21 @@ namespace Cart.API
             {
                 endpoints.MapControllers();
             });
+
+            // Migrates db if needed
+            var context = app.ApplicationServices.GetService<CartContext>();
+            context.Database.Migrate();
+
+            ConfigureEventBus(app);
+        }
+
+        private void ConfigureEventBus(IApplicationBuilder app)
+        {
+            var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
+
+            eventBus.Subscribe<ProductPriceChangedMessageEvent, ProductPriceChangedEventHandler>();
+            eventBus.Subscribe<ProductNameChangedMessageEvent, ProductNameChangedEventHandler>();
+            eventBus.Subscribe<ProductRemovedMessageEvent, ProductRemovedEventHandler>();
         }
     }
 }

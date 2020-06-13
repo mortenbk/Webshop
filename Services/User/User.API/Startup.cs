@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Catalog.API.Infrastructure;
+using User.API.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +17,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using WebShop.RabbitMQ;
+using User.API.Events;
+using User.API.Events.Handlers;
 
-namespace Catalog.API
+namespace User.API
 {
     public class Startup
     {
@@ -39,14 +41,14 @@ namespace Catalog.API
                 options.DescribeAllEnumsAsStrings();
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Catalog API - Catalog HTTP API",
+                    Title = "User API - User HTTP API",
                     Version = "v1",
-                    Description = "The Catalog Service HTTP API"
+                    Description = "The User Service HTTP API"
                 });
             });
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<CatalogContext>(options =>
+                .AddDbContext<UserContext>(options =>
                 {
                     options.UseSqlServer(Configuration["ConnectionString"],
                         sqlServerOptionsAction: sqlOptions =>
@@ -60,6 +62,7 @@ namespace Catalog.API
 
             AddRabbitMQ(services);
         }
+
 
         public IServiceCollection AddRabbitMQ(IServiceCollection services)
         {
@@ -95,16 +98,17 @@ namespace Catalog.API
                 var eventBusSubcriptionsManager = sp.GetRequiredService<ISubscriptionManager>();
 
 
-                return new RabbitMQConnectionService(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, "Catalog", retryCount: 5);
+                return new RabbitMQConnectionService(rabbitMQPersistentConnection, logger, iLifetimeScope, eventBusSubcriptionsManager, "User", retryCount: 5);
             });
             services.AddSingleton<ISubscriptionManager, SubscriptionManager>();
+            services.AddTransient<CartPriceChangedEventHandler>();
             return services;
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
             // Register your own things directly with Autofac, like:
-            builder.RegisterModule(new CatalogModule());
+            builder.RegisterModule(new UserModule());
         }
 
 
@@ -123,7 +127,7 @@ namespace Catalog.API
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "User API V1");
                 c.RoutePrefix = String.Empty;
             });
 
@@ -137,7 +141,7 @@ namespace Catalog.API
             });
 
             // Migrates db if needed
-            var context = app.ApplicationServices.GetService<CatalogContext>();
+            var context = app.ApplicationServices.GetService<UserContext>();
             context.Database.Migrate();
 
             ConfigureEventBus(app);
@@ -147,7 +151,7 @@ namespace Catalog.API
         {
             var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-            //eventBus.Subscribe<MessageQueueEvent, MessageQueueEventHandler>();
+            eventBus.Subscribe<CartPriceChangedMessageEvent, CartPriceChangedEventHandler>();
         }
     }
 }

@@ -20,6 +20,8 @@ namespace Catalog.API.Infrastructure
 
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<ProductCategory> ProductCategories { get; set; }
+
         public CatalogContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CatalogContext>();

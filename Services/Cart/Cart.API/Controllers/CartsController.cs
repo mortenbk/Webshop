@@ -28,14 +28,14 @@ namespace Cart.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Models.Cart>>> GetCarts()
         {
-            return await _context.Carts.ToListAsync();
+            return await _context.Carts.Include(cart => cart.CartItems).ToListAsync();
         }
 
         // GET: api/Carts/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Models.Cart>> GetCart(int id)
         {
-            var cart = await _context.Carts.FindAsync(id);
+            var cart = await _context.Carts.Include(cart => cart.CartItems).FirstOrDefaultAsync(cart => cart.Id == id);
 
             if (cart == null)
             {
@@ -83,9 +83,10 @@ namespace Cart.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Models.Cart>> PostCart(Models.Cart cart)
         {
+            _context.CartItems.UpdateRange(cart.CartItems);
             _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
-            _eventBus.Publish(new MessageQueueEvent() { Message = $"Cart created: {cart.Id}" });
+            //_eventBus.Publish(new MessageQueueEvent() { Message = $"Cart created: {cart.Id}" });
             return CreatedAtAction("GetCart", new { id = cart.Id }, cart);
         }
 
