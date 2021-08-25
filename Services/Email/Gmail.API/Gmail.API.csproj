@@ -12,7 +12,7 @@
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.46.0.1950" />
     <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.46.0.1869" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="3.1.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\WebShop.RabbitMQ\WebShop.RabbitMQ.csproj" />
